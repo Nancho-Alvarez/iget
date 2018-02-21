@@ -9,6 +9,10 @@ import os
 import sys
 
 arguments=sys.argv
+animated=0
+if arguments[1] == "-a":
+    animated=1
+    arguments=arguments[1:] # shift
 keywords=' '.join(arguments[1:])
 
 url = 'https://duckduckgo.com/'
@@ -39,9 +43,11 @@ params = (
 ('o', 'json'),
 ('q', keywords),
 ('vqd', searchObj.group(1)),
-#('f', ',type:photo-animatedgif,,'),
 ('p', '2')
 )
+if animated:
+    params=params + (('f', 'type:photo-animatedgif'),) # ',type...,,'
+
 
 requestUrl = url + "i.js"
 
@@ -50,7 +56,7 @@ while True:
     data = json.loads(res.text)
     for obj in data["results"]:
          print format(obj["image"])
-         os.system("wget --tries=1 --timeout=4 " + obj["image"])
+         #os.system("wget --tries=1 --timeout=4 " + obj["image"])
     #if "next" not in data:
     exit(0)
     requestUrl = url + data["next"]
