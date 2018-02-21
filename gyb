@@ -1,0 +1,8 @@
+#yahoo
+grep -Eio 'imgurl[^\&]*' y.html |cut -c8- |sed 's/%2F/\//g'  > boryget.txt
+#bing
+grep -Eoi 'https?[^&]*' b.html|grep -i '\.jpg\|\.png\|\.gif' >> boryget.txt
+#google
+grep -Eoi 'http[^"]*' g.html | grep -i '\.jpg\|\.png\|\.gif' >> boryget.txt
+wget --tries=1 --timeout=4 -i boryget.txt
+rm boryget.txt
