@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 if (scalar @ARGV == 0) {
-	print "Usage: iget [-a] [-g|-y|-b[Number]] SearchTerm ...\n";
+	print "Usage: iget [-a] [-g|-y|-b[Number]|-d[Number]] SearchTerm ...\n";
 	exit 1;
 }
 
@@ -22,7 +22,7 @@ if (substr($ARGV[0],0,1) eq "-") {
 	$buscador="yahoo"      if ($inicial eq "y");
 	$buscador="bing"       if ($inicial eq "b");
 	$buscador="duckduckgo" if ($inicial eq "d");
-	$n=substr($ARGV[0],2); # only used in bing
+	$n=substr($ARGV[0],2); # only used in bing and duckduckgo
 	if ($n eq "" || $n =~ /[^0-9]/) { $n=1; }
 	shift @ARGV;
 }
@@ -62,7 +62,8 @@ if ($buscador eq "bing") {
 	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
 }
 if ($buscador eq "duckduckgo") {
-	$url="https://duckduckgo.com/i.js?q=$terminos\\\&vqd=$vqd"; # kp=-2 no funciona
+	$n=$n-1;
+	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$n\\\&vqd=$vqd"; # kp=-2 no funciona
 	$animated_option="\\\&f=type:photo-animatedgif";
 	$initial_number=4000;
 	$regex='"image":"([^"]*?)"';
