@@ -3,42 +3,24 @@
 use strict;
 use warnings;
 
-if (scalar @ARGV == 0) {
-	print "Usage: iget [-a] [-g|-y|-b[Number]] SearchTerm ...\n";
-	exit 1;
-}
-
 my $animated=0;
 if ($ARGV[0] eq "-a") {
 	$animated=1;
 	shift @ARGV;
 }
 
-my $n=""; # first image
 my $buscador="google";
 if (substr($ARGV[0],0,1) eq "-") {
-	my $inicial=substr($ARGV[0],1,1);
-	$buscador="google"     if ($inicial eq "g");
-	$buscador="yahoo"      if ($inicial eq "y");
-	$buscador="bing"       if ($inicial eq "b");
-	$buscador="duckduckgo" if ($inicial eq "d");
-	$n=substr($ARGV[0],2); # only used in bing
-	if ($n eq "" || $n =~ /[^0-9]/) { $n=1; }
+	$buscador="yahoo" if ($ARGV[0] eq "-y");
+	$buscador="bing" if ($ARGV[0] eq "-b");
+	$buscador="google" if ($ARGV[0] eq "-g");
 	shift @ARGV;
 }
+
 my @chars=("a".."z");
 my $auxfile; # random string
 $auxfile .= $chars[rand @chars] for 1..12;
-
 my $terminos=join('+',@ARGV);
-
-my $vqd=0;
-# in duckduckgo we must obtain first a numeric code called vqd
-if ($buscador eq "duckduckgo") {
-	my $auxrequest=`wget -O - https://duckduckgo.com?q=$terminos`;
-	$auxrequest =~ /vqd='(\d*)'/;
-	$vqd=$1;
-}
 
 my $ua="\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36\"";
 my $url="https://www.google.es/search?\\\&tbm=isch\\\&tbs=isz:lt,islt:vga\\\&q=$terminos";
@@ -55,24 +37,18 @@ if ($buscador eq "yahoo") {
 }
 if ($buscador eq "bing") {
 	$ua="";
-	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$n";
+	$url="https://www.bing.com/images/search?q=$terminos\\\&first=1";
 	$animated_option="\\\&qft=+filterui:photo-animatedgif";
 	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"";
-	$initial_number=3000+$n-1;
-	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
-}
-if ($buscador eq "duckduckgo") {
-	$url="https://duckduckgo.com/i.js?q=$terminos\\\&vqd=$vqd"; # kp=-2 no funciona
-	$animated_option="\\\&f=type:photo-animatedgif";
-	$initial_number=4000;
-	$regex='"image":"([^"]*?)"';
+	$initial_number=3000;
+	$regex='blank" href="([^";=]*?[^/])" h=';
 }
 
 
 if ($animated) {
 	$url=$url . $animated_option;
 }
-system("wget $cookies -O $auxfile --user-agent=$ua $url");
+system("wget $cookies $url -O $auxfile --user-agent=$ua\n");
 open(my $fh, $auxfile)
   or die "Could not open file '$auxfile' $!";
 
@@ -84,16 +60,13 @@ while (my $row = <$fh>) {
 }
 close($fh) or die "Could not close file '$auxfile' $!";
 
-$terminos =~ s/ /_/g;     # substitute spaces for underscores
 my $i = $initial_number;
 foreach $a (@total) {
-	$a =~ s/\(/\\\(/g;    # escape parentheses
+	$a =~ s/\(/\\\(/g; # escape parentheses
 	$a =~ s/\)/\\\)/g;
-	$a =~ s/\&/\\\&/g;    # escape ampersands
 	my $out = $terminos . $i;
 	if ($animated) { $out = $out . ".gif"; }
-	print "$a\n";
-	system("wget --tries=1 --timeout=4 -O $out $a");
+	system("wget --tries=1 --timeout=4 $a -O $out\n");
 	$i++;
 }
 system("rm $auxfile");
