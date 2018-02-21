@@ -50,7 +50,7 @@ if ($buscador eq "bing") {
 	$animated_option="\\\&qft=+filterui:photo-animatedgif";
 	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"";
 	$initial_number=3000+$n-1;
-	$regex='blank" href="([^";=]*?[^/])" h=';
+	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
 }
 
 
@@ -75,6 +75,7 @@ foreach $a (@total) {
 	$a =~ s/\)/\\\)/g;
 	my $out = $terminos . $i;
 	if ($animated) { $out = $out . ".gif"; }
+	print "$a\n";
 	system("wget --tries=1 --timeout=4 $a -O $out\n");
 	$i++;
 }
