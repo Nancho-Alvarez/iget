@@ -18,9 +18,10 @@ my $n=""; # first image
 my $buscador="google";
 if (substr($ARGV[0],0,1) eq "-") {
 	my $inicial=substr($ARGV[0],1,1);
-	$buscador="yahoo"  if ($inicial eq "y");
-	$buscador="bing"   if ($inicial eq "b");
-	$buscador="google" if ($inicial eq "g");
+	$buscador="google"     if ($inicial eq "g");
+	$buscador="yahoo"      if ($inicial eq "y");
+	$buscador="bing"       if ($inicial eq "b");
+	$buscador="duckduckgo" if ($inicial eq "d");
 	$n=substr($ARGV[0],2); # only used in bing
 	if ($n eq "" || $n =~ /[^0-9]/) { $n=1; }
 	shift @ARGV;
@@ -30,6 +31,16 @@ my $auxfile; # random string
 $auxfile .= $chars[rand @chars] for 1..12;
 
 my $terminos=join('+',@ARGV);
+
+my $vqd=0;
+# in duckduckgo we must obtain first a numeric code called vqd
+if ($buscador eq "duckduckgo") {
+	my $auxrequest=`wget https://duckduckgo.com?q=$terminos -O -`;
+	$auxrequest =~ /vqd='(\d*)'/;
+	$vqd=$1;
+}
+
+
 
 my $ua="\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36\"";
 my $url="https://www.google.es/search?\\\&tbm=isch\\\&tbs=isz:lt,islt:vga\\\&q=$terminos";
@@ -52,6 +63,13 @@ if ($buscador eq "bing") {
 	$initial_number=3000+$n-1;
 	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
 }
+if ($buscador eq "duckduckgo") {
+	$url="https://duckduckgo.com/i.js?q=$terminos\\\&vqd=$vqd"; # kp=-2 no funciona
+	$animated_option="\\\&f=type:photo-animatedgif";
+	#$cookies="--header=\"Cookie: p=-2\""; # no funciona
+	$initial_number=4000;
+	$regex='"image":"([^"]*?)"';
+}
 
 
 if ($animated) {
@@ -69,10 +87,12 @@ while (my $row = <$fh>) {
 }
 close($fh) or die "Could not close file '$auxfile' $!";
 
+$terminos =~ s/ /_/g;     # substitute spaces for underscores
 my $i = $initial_number;
 foreach $a (@total) {
-	$a =~ s/\(/\\\(/g; # escape parentheses
+	$a =~ s/\(/\\\(/g;    # escape parentheses
 	$a =~ s/\)/\\\)/g;
+	$a =~ s/\&/\\\&/g;    # escape ampersands
 	my $out = $terminos . $i;
 	if ($animated) { $out = $out . ".gif"; }
 	print "$a\n";
