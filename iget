@@ -65,10 +65,9 @@ if ($buscador eq "duckduckgo") {
 	$n=$n-1;
 	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$n\\\&vqd=$vqd"; # kp=-2 no funciona
 	$animated_option="\\\&f=type:photo-animatedgif";
-	$initial_number=4000;
+	$initial_number=4000+$n;
 	$regex='"image":"([^"]*?)"';
 }
-
 
 if ($animated) {
 	$url=$url . $animated_option;
