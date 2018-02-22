@@ -33,9 +33,6 @@ if ($argc == 0) {
 	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-f#] [-m#] search terms ...\n";
 	exit 1;
 }
-print "buscador: $buscador, animated:$animated, first:$first, only_list=$only_list, max_n:$max_n\n";
-print "terminos: @ARGV\n";
-#exit 1;
 
 my @chars=("a".."z");
 my $auxfile; # random string
