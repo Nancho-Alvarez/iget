@@ -3,29 +3,40 @@
 use strict;
 use warnings;
 
-if (scalar @ARGV == 0) {
-	print "Usage: iget [-a] [-g|-y|-b[Number]|-d[Number]] SearchTerm ...\n";
+my $animated=0;
+my $first=1; # first image
+my $only_list=0;
+my $print_index=0;
+my $max_n=1000;
+my $buscador="google";
+my $argc=scalar @ARGV;
+while ($argc) {
+	last if $ARGV[0] !~ /^-([a|b|d|f|g|i|l|m|y])([0-9]*)$/;
+	my $option=$1;
+	my $number=$2;
+	$animated=1            if ($option eq "a");
+	$buscador="google"     if ($option eq "g");
+	$buscador="yahoo"      if ($option eq "y");
+	$buscador="bing"       if ($option eq "b");
+	$buscador="duckduckgo" if ($option eq "d");
+	$only_list=1           if ($option eq "l");
+	$print_index=1         if ($option eq "i");
+	if ($number ne "") {
+		$max_n=$number     if ($option eq "m");
+		$first=$number     if ($option eq "f"); # only used in bing and duckduckgo
+	}
+	$argc--;
+	shift @ARGV;
+}
+
+if ($argc == 0) {
+	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-fNumber] [-mNumber] SearchTerms ...\n";
 	exit 1;
 }
+print "buscador: $buscador, animated:$animated, first:$first, only_list=$only_list, max_n:$max_n\n";
+print "terminos: @ARGV\n";
+#exit 1;
 
-my $animated=0;
-if ($ARGV[0] eq "-a") {
-	$animated=1;
-	shift @ARGV;
-}
-
-my $n=""; # first image
-my $buscador="google";
-if (substr($ARGV[0],0,1) eq "-") {
-	my $inicial=substr($ARGV[0],1,1);
-	$buscador="google"     if ($inicial eq "g");
-	$buscador="yahoo"      if ($inicial eq "y");
-	$buscador="bing"       if ($inicial eq "b");
-	$buscador="duckduckgo" if ($inicial eq "d");
-	$n=substr($ARGV[0],2); # only used in bing and duckduckgo
-	if ($n eq "" || $n =~ /[^0-9]/) { $n=1; }
-	shift @ARGV;
-}
 my @chars=("a".."z");
 my $auxfile; # random string
 $auxfile .= $chars[rand @chars] for 1..12;
@@ -55,45 +66,48 @@ if ($buscador eq "yahoo") {
 }
 if ($buscador eq "bing") {
 	$ua="";
-	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$n";
+	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$first";
 	$animated_option="\\\&qft=+filterui:photo-animatedgif";
 	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"";
-	$initial_number=3000+$n-1;
+	$initial_number=3000+$first-1;
 	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
 }
 if ($buscador eq "duckduckgo") {
-	$n=$n-1;
-	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$n\\\&vqd=$vqd"; # kp=-2 no funciona
+	$first=$first-1;
+	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$first\\\&p=-2\\\&vqd=$vqd";
+	# safesearch off: tried options k=-2 and kp=-2 but do not work
 	$animated_option="\\\&f=type:photo-animatedgif";
-	$initial_number=4000+$n;
+	$initial_number=4000+$first;
 	$regex='"image":"([^"]*?)"';
 }
 
-if ($animated) {
-	$url=$url . $animated_option;
-}
+$url=$url . $animated_option if $animated;
 system("wget $cookies -O $auxfile --user-agent=$ua $url");
+
 open(my $fh, $auxfile)
   or die "Could not open file '$auxfile' $!";
 
 my @total= ();
 while (my $row = <$fh>) {
 	my @lista = $row =~ /$regex/g;
-	
 	push(@total, @lista);
 }
 close($fh) or die "Could not close file '$auxfile' $!";
 
 $terminos =~ s/ /_/g;     # substitute spaces for underscores
 my $i = $initial_number;
+my $count=1;
 foreach $a (@total) {
 	$a =~ s/\(/\\\(/g;    # escape parentheses
 	$a =~ s/\)/\\\)/g;
 	$a =~ s/\&/\\\&/g;    # escape ampersands
 	my $out = $terminos . $i;
-	if ($animated) { $out = $out . ".gif"; }
+	$out = $out . ".gif" if $animated;
+	print "$i: " if $print_index;
 	print "$a\n";
-	system("wget --tries=1 --timeout=4 -O $out $a");
+	system("wget --tries=1 --timeout=4 -O $out $a") if !$only_list;
+	last if ($count==$max_n);
+	$count++;
 	$i++;
 }
 system("rm $auxfile");

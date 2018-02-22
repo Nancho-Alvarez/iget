@@ -38,6 +38,7 @@ headers = {
 params = (
 #('o', 'json'),
 ('q', keywords),
+('p', -2), # no funciona
 ('vqd', searchObj.group(1)),
 )
 if animated:
@@ -47,11 +48,13 @@ if animated:
 requestUrl = url + "i.js"
 
 while True:
+    print
+    print requestUrl
     res = requests.get(requestUrl, params=params)
     data = json.loads(res.text)
     for obj in data["results"]:
          print format(obj["image"])
-         os.system("wget --tries=1 --timeout=4 " + obj["image"])
+         #os.system("wget --tries=1 --timeout=4 " + obj["image"])
     if "next" not in data:
         exit(0)
     requestUrl = url + data["next"]
