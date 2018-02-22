@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 my $animated=0;
-my $first=1; # first image
+my $first=0; # first image
 my $only_list=0;
 my $print_index=0;
 my $max_n=1000;
@@ -63,14 +63,14 @@ if ($buscador eq "yahoo") {
 }
 if ($buscador eq "bing") {
 	$ua="";
-	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$first";
+	my $firstplusone=$first+1;
+	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$firstplusone";
 	$animated_option="\\\&qft=+filterui:photo-animatedgif";
 	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"";
-	$initial_number=3000+$first-1;
+	$initial_number=3000+$first;
 	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
 }
 if ($buscador eq "duckduckgo") {
-	$first=$first-1;
 	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$first\\\&p=-2\\\&vqd=$vqd";
 	# safesearch off: tried options k=-2 and kp=-2 but do not work
 	$animated_option="\\\&f=type:photo-animatedgif";

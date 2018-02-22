@@ -1,9 +1,7 @@
 # iget
-Get images from internet
+Get images from internet using different search engines
 
-Scrape images from google, yahoo, bing or duckduckgo
-
-Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-f**#] [**-m**#]  *searchTerms* ...
+Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-f**#] [**-m**#]  *search* *terms* ...
 
 
 ## Options:
@@ -22,6 +20,6 @@ Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-f**
 
 **-i** Print the index number in front of the URL
 
-**-f**#  Fist image to download. # is a number between 1 and 1000. Only available in Bing and DuckDuckGo
+**-f**#  Fist image to download. # is a number between 0 and 999. Only available in Bing and DuckDuckGo
 
 **-m**#  Maximum number of images to download. # is a number between 1 and 100
