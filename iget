@@ -32,7 +32,7 @@ while ($argc) {
 }
 
 if ($argc == 0) {
-	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-f#] [-m#] search terms ...\n";
+	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-r] [-f#] [-m#] search terms ...\n";
 	exit 1;
 }
 

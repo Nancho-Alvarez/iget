@@ -24,6 +24,8 @@ Just give execute permission to the file **iget** and put in somewhere in your $
 
 **-i** Print the index number in front of the URL
 
+**-r** Save the images using their real name instead of the default behaviour.
+
 **-f**#  Fist image to download. # is a number between 0 and 999. Only available in Bing and DuckDuckGo
 
 **-m**#  Maximum number of images to download. # is a number between 1 and 100. The actual number of images can be smaller.
@@ -54,6 +56,10 @@ Download images of flowers using Bing search engine starting at image number 100
 **iget -d -m2 horse**
 
 Get only two images of horses using DuckDuckgo
+
+**iget -r trees**
+
+Save the images using their real filename
 
 ### More examples
 
