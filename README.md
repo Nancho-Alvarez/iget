@@ -3,6 +3,10 @@ Get images from internet using different search engines
 
 Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-f**#] [**-m**#]  *search* *terms* ...
 
+## Installation
+
+Just give execute permission to the file **iget** and put in somewhere in your $PATH.
+
 
 ## Options:
 
