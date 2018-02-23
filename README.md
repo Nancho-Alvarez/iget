@@ -1,7 +1,7 @@
 # iget
 Get images from internet using different search engines
 
-Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-f**#] [**-m**#]  *search* *terms* ...
+Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-r**] [**-f**#] [**-m**#]  *search* *terms* ...
 
 ## Installation
 
