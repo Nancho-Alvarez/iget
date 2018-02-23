@@ -7,11 +7,12 @@ my $animated=0;
 my $first=0; # first image
 my $only_list=0;
 my $print_index=0;
+my $real_name=0;
 my $max_n=1000;
 my $buscador="google";
 my $argc=scalar @ARGV;
 while ($argc) {
-	last if $ARGV[0] !~ /^-([a|b|d|f|g|i|l|m|y])([0-9]*)$/;
+	last if $ARGV[0] !~ /^-([a|b|d|f|g|i|l|m|r|y])([0-9]*)$/;
 	my $option=$1;
 	my $number=$2;
 	$animated=1            if ($option eq "a");
@@ -21,6 +22,7 @@ while ($argc) {
 	$buscador="duckduckgo" if ($option eq "d");
 	$only_list=1           if ($option eq "l");
 	$print_index=1         if ($option eq "i");
+	$real_name=1           if ($option eq "r");
 	if ($number ne "") {
 		$max_n=$number     if ($option eq "m");
 		$first=$number     if ($option eq "f"); # only used in bing and duckduckgo
@@ -100,9 +102,11 @@ foreach $a (@total) {
 	$a =~ s/\&/\\\&/g;    # escape ampersands
 	my $out = $terminos . $i;
 	$out = $out . ".gif" if $animated;
+	my $salida = "-O $out";
+	$salida = "" if $real_name;
 	print "$i: " if $print_index;
 	print "$a\n";
-	system("wget --tries=1 --timeout=4 -O $out $a") if !$only_list;
+	system("wget --tries=1 --timeout=4 $salida $a") if !$only_list;
 	last if ($count==$max_n);
 	$count++;
 	$i++;
