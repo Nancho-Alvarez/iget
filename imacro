@@ -1,0 +1,28 @@
+#! /bin/bash
+
+# put manually the mouse pointer in the middle of the image preview
+
+down="Down Down Down Down Down Down Down" #Google
+#down="Down Down Down Down" #DuckDuckGo
+#down="Down Down" #Yahoo and Bing
+
+nmax=50
+
+xdotool search "cats" windowfocus &> /dev/null
+for i in `seq $nmax`; do 
+	sleep 1
+	xdotool click 3
+	xdotool key $down Return
+	#status=1
+	#while [ $status == 1 ]; do
+	#	xwininfo -name "Save File" &> /dev/null
+	#	status=$?
+	#done
+	xdotool search --sync "Save File" &> /dev/null
+	sleep .5
+	xdotool key Return
+	sleep 1
+	xdotool key Right
+done
+
+
