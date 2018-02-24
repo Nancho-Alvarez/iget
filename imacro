@@ -1,23 +1,57 @@
 #! /bin/bash
 
-# put manually the mouse pointer in the middle of the image preview
+# By the moment, this script only works in Google-Chrome
 
-down="Down Down Down Down Down Down Down" #Google
-#down="Down Down Down Down" #DuckDuckGo
-#down="Down Down" #Yahoo and Bing
+# 1. Open an image search engine (google, yahoo, bing or duckduckgo)
+# 2. Do any search
+# 3. Click any image to see the preview
+# 4. Put the mouse pointer in the middle of the image preview (without clicking)
+# 5. Execute this script from a terminal
+# 6. Enjoy
 
-nmax=50
 
-xdotool search "cats" windowfocus &> /dev/null
+engine="none"
+if xwininfo -tree -root |grep " Google " >/dev/null; then
+	down_chrome=7
+	down_firefox=11
+	engine="Google" 
+fi
+if xwininfo -tree -root |grep " Yahoo " >/dev/null; then 
+	down_chrome=2
+	down_firefox=4
+	engine="Yahoo"
+fi
+if xwininfo -tree -root |grep " Bing " >/dev/null; then 
+	down_chrome=2
+	down_firefox=4
+	engine="Bing"
+fi
+if xwininfo -tree -root |grep " DuckDuckGo " >/dev/null; then 
+	down_chrome=4
+	down_firefox=11
+	engine="DuckDuckGo"
+fi
+
+if [ $engine == "none" ]
+then
+	exit 1
+fi
+
+# Copy the word "Down" several times, depending on the browser and the search engine 
+down=""
+for i in `seq $down_chrome`
+do
+	down="$down Down"
+done
+
+# bring the window to foreground
+xdotool search " $engine " windowactivate 2> /dev/null
+
+
 for i in `seq $nmax`; do 
 	sleep 1
 	xdotool click 3
 	xdotool key $down Return
-	#status=1
-	#while [ $status == 1 ]; do
-	#	xwininfo -name "Save File" &> /dev/null
-	#	status=$?
-	#done
 	xdotool search --sync "Save File" &> /dev/null
 	sleep .5
 	xdotool key Return
