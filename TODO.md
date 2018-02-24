@@ -2,5 +2,6 @@
 
 - chequear ficheros vacíos
 
+- imacro: detectar buscador
 
 
