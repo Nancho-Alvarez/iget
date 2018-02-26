@@ -97,6 +97,6 @@ Download images of mountains in high definition and create a numbered list of UR
 
 Download 5 pages of results from Bing
 
-**iget robin -- -batman
+**iget robin -- -batman**
 
 Download images that contain robin but not contain batman, -batman is a search term
