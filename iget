@@ -8,31 +8,36 @@ my $first=0; # first image
 my $only_list=0;
 my $print_index=0;
 my $real_name=0;
+my $safesearch=0;
+my $hay_opciones=1;
 my $max_n=1000;
 my $buscador="google";
-my $argc=scalar @ARGV;
-while ($argc) {
-	last if $ARGV[0] !~ /^-([a|b|d|f|g|i|l|m|r|y])([0-9]*)$/;
-	my $option=$1;
-	my $number=$2;
-	$animated=1            if ($option eq "a");
-	$buscador="google"     if ($option eq "g");
-	$buscador="yahoo"      if ($option eq "y");
-	$buscador="bing"       if ($option eq "b");
-	$buscador="duckduckgo" if ($option eq "d");
-	$only_list=1           if ($option eq "l");
-	$print_index=1         if ($option eq "i");
-	$real_name=1           if ($option eq "r");
-	if ($number ne "") {
-		$max_n=$number     if ($option eq "m");
-		$first=$number     if ($option eq "f"); # only used in bing and duckduckgo
+
+my @palabras=();
+foreach my $arg (@ARGV) {
+	if ($arg =~ /^-/ && $hay_opciones)  
+	{
+		$animated=1				if ($arg =~ /a/);
+		$buscador="google"     	if ($arg =~ /g/);
+		$buscador="yahoo"      	if ($arg =~ /y/);
+		$buscador="bing"       	if ($arg =~ /b/);
+		$buscador="duckduckgo" 	if ($arg =~ /d/);
+		$only_list=1           	if ($arg =~ /l/);
+		$print_index=1         	if ($arg =~ /i/);
+		$real_name=1           	if ($arg =~ /r/);
+		$safesearch=1          	if ($arg =~ /s/);
+		$max_n=$1 				if ($arg =~ /m([0-9]+)/);
+		$first=$1				if ($arg =~ /f([0-9]+)/);
+		$hay_opciones=0			if ($arg =~ /^-.*-/);
+	} else {
+		push @palabras, $arg;
 	}
-	$argc--;
-	shift @ARGV;
 }
 
-if ($argc == 0) {
-	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-r] [-f#] [-m#] search terms ...\n";
+my $terminos=join('+', @palabras);
+
+if ($terminos eq "") {
+	print "Usage: iget [-a] [-b|-d|-g|-y] [-l] [-i] [-r] [-s] [-f#] [-m#] [--] search terms ...\n";
 	exit 1;
 }
 
@@ -40,7 +45,7 @@ my @chars=("a".."z");
 my $auxfile; # random string
 $auxfile .= $chars[rand @chars] for 1..12;
 
-my $terminos=join('+',@ARGV);
+#my $terminos=join('+',@ARGV);
 
 my $vqd=0;
 # in duckduckgo we must obtain first a numeric code called vqd
