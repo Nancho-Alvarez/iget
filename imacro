@@ -1,6 +1,9 @@
 #! /bin/bash
 
-# By the moment, this script only works in Google-Chrome
+# This script only works with Chrome and Firefox
+# Dependencies: xdotool
+
+# Usage: imacro [number of images]
 
 # 1. Open an image search engine (google, yahoo, bing or duckduckgo)
 # 2. Do any search
@@ -20,13 +23,12 @@ if [ "$window_chrome" != "" ]; then
 	browser="Chrome"
 	window_title=$window_chrome
 fi
-
 if [ "$window_firefox" != "" ]; then
 	browser="Firefox"
 	window_title=$window_firefox
 fi
-
 if [ $browser == "none" ]; then exit 1; fi
+
 
 engine="none"
 if [[ $window_title =~ " Google " ]]; then
@@ -49,13 +51,16 @@ if [[ $window_title =~ " DuckDuckGo " ]]; then
 	down_firefox=11
 	engine="DuckDuckGo"
 fi
-
 if [ $engine == "none" ]; then exit 1; fi
 
 
 # Copy the word "Down" several times, depending on the browser and the search engine 
+case "$browser" in
+	"Chrome")  d="$down_chrome";;
+	"Firefox") d="$down_firefox";;
+esac
 down=""
-for i in `seq $down_chrome`
+for i in `seq $d`
 do
 	down="$down Down"
 done
@@ -63,12 +68,11 @@ done
 # bring the window to foreground
 xdotool search " $engine " windowactivate 2> /dev/null
 
-
 for i in `seq $nmax`; do 
 	sleep 1
 	xdotool click 3
 	xdotool key $down Return
-	xdotool search --sync "Save File" &> /dev/null
+	xdotool search --sync "Save " &> /dev/null
 	sleep .5
 	xdotool key Return
 	sleep 1
