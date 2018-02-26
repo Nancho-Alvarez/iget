@@ -6,4 +6,4 @@
 
 - imacro: soportar más browsers
 
-
+- imacro: segundo argumento número de downs
