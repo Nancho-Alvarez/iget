@@ -9,6 +9,8 @@
 # 5. Execute this script from a terminal
 # 6. Enjoy
 
+nmax=50
+if [ $# -ge 1 ]; then nmax=$1; fi
 
 engine="none"
 if xwininfo -tree -root |grep " Google " >/dev/null; then
