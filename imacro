@@ -12,32 +12,46 @@
 nmax=50
 if [ $# -ge 1 ]; then nmax=$1; fi
 
+window_chrome=`xwininfo -tree -root |grep " - Google Chrome" |head -n1`
+window_firefox=`xwininfo -tree -root |grep " - Mozilla Firefox" |head -n1`
+
+browser="none"
+if [ "$window_chrome" != "" ]; then
+	browser="Chrome"
+	window_title=$window_chrome
+fi
+
+if [ "$window_firefox" != "" ]; then
+	browser="Firefox"
+	window_title=$window_firefox
+fi
+
+if [ $browser == "none" ]; then exit 1; fi
+
 engine="none"
-if xwininfo -tree -root |grep " Google " >/dev/null; then
+if [[ $window_title =~ " Google " ]]; then
 	down_chrome=7
 	down_firefox=11
 	engine="Google" 
 fi
-if xwininfo -tree -root |grep " Yahoo " >/dev/null; then 
+if [[ $window_title =~ " Yahoo " ]]; then 
 	down_chrome=2
 	down_firefox=4
 	engine="Yahoo"
 fi
-if xwininfo -tree -root |grep " Bing " >/dev/null; then 
+if [[ $window_title =~ " Bing " ]]; then 
 	down_chrome=2
 	down_firefox=4
 	engine="Bing"
 fi
-if xwininfo -tree -root |grep " DuckDuckGo " >/dev/null; then 
+if [[ $window_title =~ " DuckDuckGo " ]]; then 
 	down_chrome=4
 	down_firefox=11
 	engine="DuckDuckGo"
 fi
 
-if [ $engine == "none" ]
-then
-	exit 1
-fi
+if [ $engine == "none" ]; then exit 1; fi
+
 
 # Copy the word "Down" several times, depending on the browser and the search engine 
 down=""

@@ -4,6 +4,6 @@
 
 - safesearch
 
-- imacro: detectar el browser
+- imacro: soportar más browsers
 
 
