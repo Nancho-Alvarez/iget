@@ -29,10 +29,13 @@ wget
 
 **-r** Save the images using their real name instead of the default behaviour.
 
+**-s** Safe search. Not implemented yet
+
 **-f**#  Fist image to download. # is a number between 0 and 999. Only available in Bing and DuckDuckGo
 
-**-m**#  Maximum number of images to download. # is a number between 1 and 100. The actual number of images can be smaller.
+**-m**#  Maximum number of images to download. # is a number between 1 and 100. The actual number of images can be smaller
 
+**--** After this option everything is considered a search term, even if it starts with a '-'
 
 ## Examples:
 
@@ -70,6 +73,14 @@ Save the images using their real filename
 
 See usage
 
+**iget -abm3l cats**
+
+Options can be combined, that is equivalent to iget **-a -b -m3 -l cats**
+
+**iget -l cats -a**
+
+Options can be given after the search terms
+
 **iget '"dogs and cats"'** 
 
 Search for the exact phrase "dogs and cats"
@@ -85,3 +96,7 @@ Download images of mountains in high definition and create a numbered list of UR
 **for i in \`seq 0 4\`; do iget -b -f$(($i\*28)) cats ; done**
 
 Download 5 pages of results from Bing
+
+**iget robin -- -batman
+
+Download images that contain robin but not contain batman, -batman is a search term
