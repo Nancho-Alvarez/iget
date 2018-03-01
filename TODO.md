@@ -1,5 +1,2 @@
-
 - chequear ficheros vacíos
-
-- safesearch
 

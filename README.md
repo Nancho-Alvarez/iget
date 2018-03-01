@@ -1,7 +1,7 @@
 # iget
 Get images from internet using different search engines
 
-Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-r**] [**-f**#] [**-m**#]  *search* *terms* ...
+Usage: **iget** [**-a**] [**-g**|**-y**|**-b**|**-d**] [**-l**] [**-i**] [**-r**] [**-s**] [**-f**#] [**-m**#] [**--**] *search* *terms* ...
 
 ## Installation
 
@@ -29,7 +29,7 @@ wget
 
 **-r** Save the images using their real name instead of the default behaviour.
 
-**-s** Safe search. Not implemented yet
+**-s** Safe search
 
 **-f**#  Fist image to download. # is a number between 0 and 999. Only available in Bing and DuckDuckGo
 
@@ -66,6 +66,10 @@ Get only two images of horses using DuckDuckgo
 **iget -r trees**
 
 Save the images using their real filename
+
+**iget -s shower girl
+
+Do not get explicit images
 
 ### More examples
 

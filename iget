@@ -61,31 +61,41 @@ my $animated_option="\\\&tbs=itp:animated";
 my $cookies="";
 my $initial_number=1000;
 my $regex='"ou":"([^"]*?)"';
+my $safeon ="\\\&safe=on";
+my $safeoff="\\\&safe=off";
 if ($buscador eq "yahoo") {
 	$url="https://images.search.yahoo.com/search/images?\\\&q=$terminos";
 	$animated_option="\\\&imgty=gif";
-	$cookies="--header=\"Cookie: sB=vm=p\"";
+	$cookies="--header=\"Cookie: sB=vm=p\"" if !$safesearch;
 	$initial_number=2000;
 	$regex='"iurl":"([^"]*?)"';
+	$safeon ="";
+	$safeoff="";
 }
 if ($buscador eq "bing") {
 	$ua="";
 	my $firstplusone=$first+1;
 	$url="https://www.bing.com/images/search?q=$terminos\\\&first=$firstplusone";
 	$animated_option="\\\&qft=+filterui:photo-animatedgif";
-	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"";
+	$cookies="--header=\"Cookie: SRCHHPGUSR=ADLT=OFF; _SS=SID=0\"" if !$safesearch;
 	$initial_number=3000+$first;
 	$regex='thumb" target="_blank" href="([^";=]*?[^/])" h=';
+	$safeon ="";
+	$safeoff="";
 }
 if ($buscador eq "duckduckgo") {
-	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$first\\\&p=-2\\\&vqd=$vqd";
-	# safesearch off: tried options k=-2 and kp=-2 but do not work
+	$url="https://duckduckgo.com/i.js?q=$terminos\\\&s=$first\\\&vqd=$vqd";
 	$animated_option="\\\&f=type:photo-animatedgif";
 	$initial_number=4000+$first;
 	$regex='"image":"([^"]*?)"';
+	$safeon ="\\\&p=2"; # 0 or 1 for moderate
+	$safeoff="\\\&p=-1";
 }
 
 $url=$url . $animated_option if $animated;
+$url=$url . $safeon  if  $safesearch;
+$url=$url . $safeoff if !$safesearch;
+
 system("wget $cookies -O $auxfile --user-agent=$ua $url");
 
 open(my $fh, $auxfile)
