@@ -76,7 +76,7 @@ for i in `seq $nmax`; do
 	sleep .5
 	xdotool key Return
 	xdotool search --sync "Save " &> /dev/null
-	sleep .5
+	sleep 1
 	xdotool key Return
 	sleep 1
 	xdotool key Right
