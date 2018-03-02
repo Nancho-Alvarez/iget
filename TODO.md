@@ -1,2 +1,0 @@
-- chequear ficheros vacíos
-

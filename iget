@@ -122,6 +122,7 @@ foreach $a (@total) {
 	print "$i: " if $print_index;
 	print "$a\n";
 	system("wget --tries=1 --timeout=4 $salida $a") if !$only_list;
+	unlink $out if ( !$only_list && -z $out); # delete file if empty
 	last if ($count==$max_n);
 	$count++;
 	$i++;
