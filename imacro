@@ -48,7 +48,7 @@ if [[ $window_title =~ " Bing " ]]; then
 fi
 if [[ $window_title =~ " DuckDuckGo " ]]; then 
 	down_chrome=4
-	down_firefox=11
+	down_firefox=5 # save link as...
 	engine="DuckDuckGo"
 fi
 if [ $engine == "none" ]; then exit 1; fi
